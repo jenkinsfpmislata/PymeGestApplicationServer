@@ -1,2 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" path="/PymeGestApplicationServer"/>
+<Context antiJARLocking="true" path="/applicationserver">
+<Resource name="jdbc/myoracle" 
+          auth="Container"
+          type="javax.sql.DataSource" 
+          driverClassName="com.mysql.jdbc.Driver"
+          url="jdbc:mysql://localhost/pymegest"
+          username="root" 
+          password="root" 
+          maxActive="100"
+          maxIdle="30"
+          maxWait="10000"
+          validationQuery="SELECT 1 FROM dual" />
+</Context>
+
