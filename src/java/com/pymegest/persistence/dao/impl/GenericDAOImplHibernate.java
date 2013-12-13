@@ -47,6 +47,7 @@ public class GenericDAOImplHibernate<T, ID extends Serializable> implements Gene
     public GenericDAOImplHibernate() {
 
         this.sessionFactory = HibernateUtil.getSessionFactory();
+
     }
 
     @Override
@@ -75,7 +76,7 @@ public class GenericDAOImplHibernate<T, ID extends Serializable> implements Gene
     @Override
     public void update(T t) {
 
-        Session session = sessionFactory.getCurrentSession(); 
+        Session session = sessionFactory.getCurrentSession();
 
         session.beginTransaction();
 
@@ -87,8 +88,8 @@ public class GenericDAOImplHibernate<T, ID extends Serializable> implements Gene
 
     @Override
     public void delete(ID id) {
-        
-        Session session = sessionFactory.getCurrentSession(); 
+
+        Session session = sessionFactory.getCurrentSession();
 
         T t = (T) session.get(getEntityClass(), id);
 
@@ -101,12 +102,12 @@ public class GenericDAOImplHibernate<T, ID extends Serializable> implements Gene
 
     @Override
     public List<T> findAll() {
-        
+
         Session session = sessionFactory.getCurrentSession(); //Abrimos la sesion   
-        
-        Query query = session.createQuery("SELECT t FROM "+getEntityClass().getName()+" t");
-        
-        List<T> tList = query.list(); 
+
+        Query query = session.createQuery("SELECT t FROM " + getEntityClass().getName() + " t");
+
+        List<T> tList = query.list();
 
         return tList;
     }

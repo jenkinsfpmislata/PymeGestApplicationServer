@@ -63,7 +63,7 @@ public class UsuarioDAOImplHibernate extends GenericDAOImplHibernate<Usuario, In
             List<Usuario> usuarios = query.list();
 
             return usuarios;
-
+            
         }
     }
 }

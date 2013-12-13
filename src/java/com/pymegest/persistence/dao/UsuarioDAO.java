@@ -29,6 +29,8 @@ package com.pymegest.persistence.dao;
 
 import java.util.List;
 
+
+
 /**
  * @author Ruben Coll Tovar
  * @version 1.0
@@ -37,4 +39,5 @@ import java.util.List;
 public interface UsuarioDAO extends GenericDAO<Usuario, Integer>{
        
     public List<Usuario> findByName(String nombre);
+    
 }
