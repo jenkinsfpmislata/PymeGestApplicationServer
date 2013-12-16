@@ -4,7 +4,7 @@
  * File: UserDAO.java
  * Date: 13-dic-2013
  * Encoding: UTF-8
- * License: H:\2º DAW\Proyecto\PymeGestApplicationServer\GPL 3.0
+ * License: GPL 3.0
  *
  * Copyright(c) PymeGest 2013
  * www.pymegest.com
@@ -25,8 +25,9 @@
  * along with Pymegest. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.pymegest.persistence.dao;
+package com.pymegest.applicationserver.dao;
 
+import com.pymegest.persistence.dao.GenericDAO;
 import java.util.List;
 
 

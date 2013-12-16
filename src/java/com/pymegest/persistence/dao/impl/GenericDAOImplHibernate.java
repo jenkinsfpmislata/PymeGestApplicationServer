@@ -4,7 +4,7 @@
  * File: GenericDAOImplHibernate.java
  * Date: 13-dic-2013
  * Encoding: UTF-8
- * License: H:\2º DAW\Proyecto\PymeGestApplicationServer\GPL 3.0
+ * License: GPL 3.0
  *
  * Copyright(c) PymeGest 2013
  * www.pymegest.com
@@ -42,7 +42,7 @@ import org.hibernate.SessionFactory;
  */
 public class GenericDAOImplHibernate<T, ID extends Serializable> implements GenericDAO<T, ID> {
 
-    SessionFactory sessionFactory;
+    protected SessionFactory sessionFactory;
 
     public GenericDAOImplHibernate() {
 
