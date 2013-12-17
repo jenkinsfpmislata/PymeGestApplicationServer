@@ -24,7 +24,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Pymegest. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.pymegest.applicationserver.dominio;
 
 /**
@@ -33,5 +32,37 @@ package com.pymegest.applicationserver.dominio;
  * @since 1.0
  */
 public class Usuario {
+
+    private Integer idUsuario;
+    private TipoCuenta tipoCuenta;
+
+    /**
+     * @return the idUsuario
+     */
+    public Integer getIdUsuario() {
+        return idUsuario;
+    }
+
+    /**
+     * @param idUsuario the idUsuario to set
+     */
+    public void setIdUsuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    /**
+     * @return the tipoCuenta
+     */
+    public TipoCuenta getTipoCuenta() {
+        return tipoCuenta;
+    }
+
+    /**
+     * @param tipoCuenta the tipoCuenta to set
+     */
+    public void setTipoCuenta(TipoCuenta tipoCuenta) {
+        this.tipoCuenta = tipoCuenta;
+    }
+
 
 }
