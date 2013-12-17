@@ -28,6 +28,7 @@ package com.pymegest.applicationserver.dao.impl.hibernate;
 
 import com.pymegest.applicationserver.dao.UsuarioDAO;
 import com.pymegest.persistence.dao.impl.GenericDAOImplHibernate;
+import com.pymegest.applicationserver.dominio.Usuario;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;

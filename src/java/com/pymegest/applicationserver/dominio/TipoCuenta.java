@@ -1,8 +1,8 @@
 /*
  * Project: PymeGestApplicationServer
- * Package: com.pymegest.persistence.dao
- * File: UserDAO.java
- * Date: 13-dic-2013
+ * Package: com.pymegest.applicationserver.dominio
+ * File: TipoCuenta.java
+ * Date: 17-dic-2013
  * Encoding: UTF-8
  * License: GPL 3.0
  *
@@ -25,21 +25,15 @@
  * along with Pymegest. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.pymegest.applicationserver.dao;
-
-import com.pymegest.persistence.dao.GenericDAO;
-import com.pymegest.applicationserver.dominio.Usuario;
-import java.util.List;
-
-
+package com.pymegest.applicationserver.dominio;
 
 /**
- * @author Ruben Coll Tovar
+ * @author Miguel María Martínez Echeverría
  * @version 1.0
  * @since 1.0
  */
-public interface UsuarioDAO extends GenericDAO<Usuario, Integer>{
-       
-    public List<Usuario> findByName(String nombre);
+public enum TipoCuenta {
     
+    PRUEBA,PLUS,PREMIUM;
+
 }
