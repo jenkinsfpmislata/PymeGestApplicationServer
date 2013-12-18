@@ -173,8 +173,6 @@ public class UsuarioController {
             objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
             Usuario usuario = (Usuario) objectMapper.readValue(jsonInput, Usuario.class);
             
-            //MODIFICAMOS EL USUARIO READ CON LOS DATOS DE USUARIO
-            
             usuarioRead.setTipo_cuenta(usuario.getTipo_cuenta());
             
             usuarioDAO.update(usuarioRead);
