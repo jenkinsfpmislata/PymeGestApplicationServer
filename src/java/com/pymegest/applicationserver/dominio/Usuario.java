@@ -41,54 +41,51 @@ import javax.persistence.Table;
  * @version 1.0
  * @since 1.0
  */
-
 @Entity
-@Table(name="usuario")
+@Table(name = "usuario")
 public class Usuario implements Serializable {
- 
+
     @Id
-    @Column(name="id_usuario")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Integer idUsuario;
-    
+    @Column(name = "id_usuario")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id_usuario;
     @Enumerated(EnumType.ORDINAL)
-    private TipoCuenta tipoCuenta;
+    @Column(name = "tipo_cuenta")
+    private TipoCuenta tipo_cuenta;
 
     public Usuario() {
     }
-    
-    public Usuario(Integer idUsuario, TipoCuenta tipoCuenta) {
-        this.idUsuario = idUsuario;
-        this.tipoCuenta = tipoCuenta;
-    }   
+
+    public Usuario(Integer id_usuario, TipoCuenta tipo_cuenta) {
+        this.id_usuario = id_usuario;
+        this.tipo_cuenta = tipo_cuenta;
+    }
 
     /**
      * @return the idUsuario
      */
-    public Integer getIdUsuario() {
-        return idUsuario;
+    public Integer getId_usuario() {
+        return id_usuario;
     }
 
     /**
      * @param idUsuario the idUsuario to set
      */
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setId_usuario(Integer id_usuario) {
+        this.id_usuario = id_usuario;
     }
 
     /**
      * @return the tipoCuenta
      */
-    public TipoCuenta getTipoCuenta() {
-        return tipoCuenta;
+    public TipoCuenta getTipo_cuenta() {
+        return tipo_cuenta;
     }
 
     /**
      * @param tipoCuenta the tipoCuenta to set
      */
-    public void setTipoCuenta(TipoCuenta tipoCuenta) {
-        this.tipoCuenta = tipoCuenta;
+    public void setTipo_cuenta(TipoCuenta tipo_cuenta) {
+        this.tipo_cuenta = tipo_cuenta;
     }
-
-
 }
