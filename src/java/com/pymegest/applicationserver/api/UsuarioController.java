@@ -36,6 +36,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,17 +47,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @version 1.0
  * @since 1.0
  */
+
+@Controller
 public class UsuarioController {
     
     @Autowired
     UsuarioDAO usuarioDAO;
     
-    @RequestMapping(value = {"/Usuario/{idUsuario}"}, method = RequestMethod.GET)
-    public void read(HttpServletRequest request, HttpServletResponse response, @PathVariable("idUsuario") int idUsuario) {
+    @RequestMapping(value = {"/Usuario/{id_usuario}"}, method = RequestMethod.GET)
+    public void read(HttpServletRequest request, HttpServletResponse response, @PathVariable("id_usuario") int id_usuario) {
 
         try {
 
-            Usuario usuario = usuarioDAO.read(idUsuario);
+            Usuario usuario = usuarioDAO.read(id_usuario);
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json; chaset=UTF-8");
@@ -79,12 +82,12 @@ public class UsuarioController {
 
     }
 
-    @RequestMapping(value = {"/Usuario/{idUsuario}"}, method = RequestMethod.DELETE)
-    public void delete(HttpServletRequest request, HttpServletResponse response, @PathVariable("idUsuario") int idUsuario) {
+    @RequestMapping(value = {"/Usuario/{id_usuario}"}, method = RequestMethod.DELETE)
+    public void delete(HttpServletRequest request, HttpServletResponse response, @PathVariable("id_usuario") int id_usuario) {
 
         try {
 
-            usuarioDAO.delete(idUsuario);
+            usuarioDAO.delete(id_usuario);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
         } catch (Exception ex) {
@@ -159,12 +162,12 @@ public class UsuarioController {
 
     }
 
-    @RequestMapping(value = {"/Usuario/{idUsuario}"}, method = RequestMethod.PUT)
-    public void update(HttpServletRequest request, HttpServletResponse response, @PathVariable("idUsuario") int idUsuario, @RequestBody String jsonInput) {
+    @RequestMapping(value = {"/Usuario/{id_usuario}"}, method = RequestMethod.PUT)
+    public void update(HttpServletRequest request, HttpServletResponse response, @PathVariable("id_usuario") int id_usuario, @RequestBody String jsonInput) {
 
         try {
 
-            Usuario usuarioRead = usuarioDAO.read(idUsuario);
+            Usuario usuarioRead = usuarioDAO.read(id_usuario);
 
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -172,8 +175,7 @@ public class UsuarioController {
             
             //MODIFICAMOS EL USUARIO READ CON LOS DATOS DE USUARIO
             
-            //usuarioRead.setId(usuario.getId());
-            //usuarioRead.set....
+            usuarioRead.setTipo_cuenta(usuario.getTipo_cuenta());
             
             usuarioDAO.update(usuarioRead);
 
@@ -193,7 +195,5 @@ public class UsuarioController {
             } catch (IOException ex1) {
             }
         }
-
     }
-
 }
