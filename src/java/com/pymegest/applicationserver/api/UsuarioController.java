@@ -30,7 +30,7 @@ package com.pymegest.applicationserver.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.pymegest.applicationserver.dao.UsuarioDAO;
-import com.pymegest.applicationserver.dominio.Usuario;
+import com.pymegest.applicationserver.domain.Usuario;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;

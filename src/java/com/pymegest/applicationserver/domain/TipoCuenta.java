@@ -25,7 +25,7 @@
  * along with Pymegest. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.pymegest.applicationserver.dominio;
+package com.pymegest.applicationserver.domain;
 
 /**
  * @author Miguel María Martínez Echeverría

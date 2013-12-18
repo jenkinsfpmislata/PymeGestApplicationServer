@@ -28,7 +28,7 @@
 package com.pymegest.applicationserver.dao;
 
 import com.pymegest.persistence.dao.GenericDAO;
-import com.pymegest.applicationserver.dominio.Usuario;
+import com.pymegest.applicationserver.domain.Usuario;
 import java.util.List;
 
 
