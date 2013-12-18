@@ -26,15 +26,21 @@
  */
 package com.pymegest.applicationserver.dominio;
 
+import java.io.Serializable;
+
 /**
  * @author Miguel María Martínez Echeverría
  * @version 1.0
  * @since 1.0
  */
-public class Usuario {
+public class Usuario implements Serializable {
 
     private Integer idUsuario;
     private TipoCuenta tipoCuenta;
+    
+    
+    
+    
 
     /**
      * @return the idUsuario
