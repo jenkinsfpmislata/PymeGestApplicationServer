@@ -1,0 +1,222 @@
+CREATE DATABASE  IF NOT EXISTS `pymegest_application` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `pymegest_application`;
+-- MySQL dump 10.13  Distrib 5.6.13, for Win32 (x86)
+--
+-- Host: localhost    Database: pymegest_application
+-- ------------------------------------------------------
+-- Server version	5.6.12-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `continentes`
+--
+
+DROP TABLE IF EXISTS `continentes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `continentes` (
+  `id` int(1) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `codigo` varchar(10) NOT NULL,
+  `nombre` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `continentes`
+--
+
+LOCK TABLES `continentes` WRITE;
+/*!40000 ALTER TABLE `continentes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `continentes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `direcciones`
+--
+
+DROP TABLE IF EXISTS `direcciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `direcciones` (
+  `id` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `tipo_direccion` int(2) unsigned zerofill NOT NULL,
+  `tipo_via` int(2) unsigned zerofill NOT NULL,
+  `via` varchar(60) NOT NULL,
+  `numero` varchar(5) NOT NULL,
+  `escalera` varchar(5) NOT NULL,
+  `piso` varchar(5) NOT NULL,
+  `puerta` varchar(5) NOT NULL,
+  `municipio` int(10) unsigned zerofill NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tipos_vias_idx` (`tipo_via`),
+  KEY `fk_tipos_direcciones_idx` (`tipo_direccion`),
+  KEY `fk_municipios_idx` (`municipio`),
+  CONSTRAINT `fk_tipos_vias` FOREIGN KEY (`tipo_via`) REFERENCES `tipos_vias` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_tipos_direcciones` FOREIGN KEY (`tipo_direccion`) REFERENCES `tipos_direcciones` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_municipios` FOREIGN KEY (`municipio`) REFERENCES `municipios` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `direcciones`
+--
+
+LOCK TABLES `direcciones` WRITE;
+/*!40000 ALTER TABLE `direcciones` DISABLE KEYS */;
+/*!40000 ALTER TABLE `direcciones` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `municipios`
+--
+
+DROP TABLE IF EXISTS `municipios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `municipios` (
+  `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `codigo` varchar(10) NOT NULL,
+  `nombre` varchar(45) NOT NULL,
+  `provincia` int(6) unsigned zerofill NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKProvincias_idx` (`provincia`),
+  CONSTRAINT `fk_provincias` FOREIGN KEY (`provincia`) REFERENCES `provincias` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `municipios`
+--
+
+LOCK TABLES `municipios` WRITE;
+/*!40000 ALTER TABLE `municipios` DISABLE KEYS */;
+/*!40000 ALTER TABLE `municipios` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `paises`
+--
+
+DROP TABLE IF EXISTS `paises`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `paises` (
+  `id` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `codigo` varchar(10) NOT NULL,
+  `nombre` varchar(45) NOT NULL,
+  `continente` int(1) unsigned zerofill NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKContinentes_idx` (`continente`),
+  CONSTRAINT `fk_continentes` FOREIGN KEY (`continente`) REFERENCES `continentes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `paises`
+--
+
+LOCK TABLES `paises` WRITE;
+/*!40000 ALTER TABLE `paises` DISABLE KEYS */;
+/*!40000 ALTER TABLE `paises` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `provincias`
+--
+
+DROP TABLE IF EXISTS `provincias`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `provincias` (
+  `id` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `codigo` varchar(10) NOT NULL,
+  `nombre` varchar(45) NOT NULL,
+  `pais` int(3) unsigned zerofill NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKPaises_idx` (`pais`),
+  CONSTRAINT `fk_paises` FOREIGN KEY (`pais`) REFERENCES `paises` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `provincias`
+--
+
+LOCK TABLES `provincias` WRITE;
+/*!40000 ALTER TABLE `provincias` DISABLE KEYS */;
+/*!40000 ALTER TABLE `provincias` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tipos_direcciones`
+--
+
+DROP TABLE IF EXISTS `tipos_direcciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tipos_direcciones` (
+  `id` int(2) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `tipo` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tipo_UNIQUE` (`tipo`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tipos_direcciones`
+--
+
+LOCK TABLES `tipos_direcciones` WRITE;
+/*!40000 ALTER TABLE `tipos_direcciones` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tipos_direcciones` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tipos_vias`
+--
+
+DROP TABLE IF EXISTS `tipos_vias`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tipos_vias` (
+  `id` int(2) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `tipo` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tipo_UNIQUE` (`tipo`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tipos_vias`
+--
+
+LOCK TABLES `tipos_vias` WRITE;
+/*!40000 ALTER TABLE `tipos_vias` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tipos_vias` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'pymegest_application'
+--
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2014-01-13 22:16:26
