@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.pymegest.applicationserver.dao.UsuarioDAO;
 import com.pymegest.applicationserver.domain.Usuario;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,18 +55,22 @@ public class UsuarioController {
     @Autowired
     UsuarioDAO usuarioDAO;
     
-    @RequestMapping(value = {"/Usuario/{id_usuario}"}, method = RequestMethod.GET)
-    public void read(HttpServletRequest request, HttpServletResponse response, @PathVariable("id_usuario") int id_usuario) {
+    @RequestMapping(value = {"/Usuario/{idsUsuarios}"}, method = RequestMethod.GET)
+    public void read(HttpServletRequest request, HttpServletResponse response, @PathVariable("idsUsuarios") String idsUsuariosStr) {
 
         try {
-
-            Usuario usuario = usuarioDAO.read(id_usuario);
-
+            
+            String[] idsUsuariosArr= idsUsuariosStr.split(",");
+            List<Usuario> listaUsuarios = new ArrayList();
+            for (int i=0; i<idsUsuariosArr.length; i++) {
+                listaUsuarios.add(usuarioDAO.read(Integer.parseInt(idsUsuariosArr[i])));
+            }
+            
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json; chaset=UTF-8");
 
             ObjectMapper objectMapper = new ObjectMapper();
-            String json = objectMapper.writeValueAsString(usuario);
+            String json = objectMapper.writeValueAsString(listaUsuarios);
             response.getWriter().println(json);
 
 
@@ -82,12 +87,15 @@ public class UsuarioController {
 
     }
 
-    @RequestMapping(value = {"/Usuario/{id_usuario}"}, method = RequestMethod.DELETE)
-    public void delete(HttpServletRequest request, HttpServletResponse response, @PathVariable("id_usuario") int id_usuario) {
+    @RequestMapping(value = {"/Usuario/{idsUsuarios}"}, method = RequestMethod.DELETE)
+    public void delete(HttpServletRequest request, HttpServletResponse response, @PathVariable("idsUsuarios") String idsUsuariosStr) {
 
         try {
-
-            usuarioDAO.delete(id_usuario);
+            String[] idsUsuariosArr = idsUsuariosStr.split(",");
+            for (int i=0; i<idsUsuariosArr.length; i++) {
+                usuarioDAO.delete(Integer.parseInt(idsUsuariosArr[i]));
+            }
+            
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
         } catch (Exception ex) {

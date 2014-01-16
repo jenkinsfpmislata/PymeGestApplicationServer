@@ -49,6 +49,16 @@ public class Usuario implements Serializable {
     @Column(name = "id_usuario")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_usuario;
+
+    @Column(name = "nombre")
+    private String nombre;
+
+    @Column(name = "apellidos")
+    private String apellidos;
+
+    @Column(name = "correo_electronico")
+    private String correo_electronico;
+
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "tipo_cuenta")
     private TipoCuenta tipo_cuenta;
@@ -88,4 +98,29 @@ public class Usuario implements Serializable {
     public void setTipo_cuenta(TipoCuenta tipo_cuenta) {
         this.tipo_cuenta = tipo_cuenta;
     }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
+    public String getCorreo_electronico() {
+        return correo_electronico;
+    }
+
+    public void setCorreo_electronico(String correo_electronico) {
+        this.correo_electronico = correo_electronico;
+    }
+
 }
