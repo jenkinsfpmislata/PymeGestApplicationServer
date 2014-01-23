@@ -148,7 +148,7 @@
         <echo>Fichero de configuración:${proyecto.productionFile}</echo>
 
         <!-- propiedades del entorno de producción -->
-        <property file="/jenkins/environments/banco1_servidor.properties" />
+        <property file="/jenkins/environments/pymegest_application_server.properties" />
         <!--
             OJO:siempre despues de cargar el fichero de propiedades
             Pq al ser las propiedades inmutables, si no tiene valor se pone por defecto.
