@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" path="/PymegestApplicationServer">
+<Context antiJARLocking="true" path="/PymeGestApplicationServer">
 <Resource name="jdbc/pymegest_application" 
           auth="Container"
           type="javax.sql.DataSource" 
