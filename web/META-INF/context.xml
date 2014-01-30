@@ -6,7 +6,7 @@
           driverClassName="com.mysql.jdbc.Driver"
           url="jdbc:mysql://localhost:3306/pymegest_application"
           username="root" 
-          password="" 
+          password="frodo2013" 
           maxActive="100"
           maxIdle="30"
           maxWait="10000"
