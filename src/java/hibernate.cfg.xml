@@ -6,5 +6,7 @@
     <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
     <property name="hibernate.show_sql">true</property>
     <mapping class="com.pymegest.applicationserver.domain.Usuario"/>
+    <mapping class="com.pymegest.applicationserver.domain.Empleado"/>
+    <mapping class="com.pymegest.applicationserver.domain.Producto"/>
   </session-factory>
 </hibernate-configuration>

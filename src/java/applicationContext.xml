@@ -14,5 +14,7 @@
  
     <bean class="com.pymegest.persistence.hibernate.HibernateUtil" factory-method="getSessionFactory"  /> <!-- Ruta de nuestro HibernateUtil -->
     <bean class="com.pymegest.applicationserver.dao.impl.hibernate.UsuarioDAOImplHibernate" /> <!-- Ruta de nuestra clase/s implementada en hibernate -->
- 
+    <bean class="com.pymegest.applicationserver.dao.impl.hibernate.EmpleadoDAOImplHibernate" />
+    <bean class="com.pymegest.applicationserver.dao.impl.hibernate.ProductoDAOImplHibernate" />
+    
 </beans>

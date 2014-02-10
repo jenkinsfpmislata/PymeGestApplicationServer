@@ -69,7 +69,7 @@
 
     -->
     
-    <target name="desplegarProduccion" depends="-configureAnt,-enableProduccion,dist,-deployProduccion" >
+    <target name="desplegarProduccionServidor" depends="-configureAnt,-enableProduccion,dist,-deployProduccion" >
         <!--
             El fichero ${proyecto.productionFile} debe tener las siguientes propiedades:
             tomcat.production.url

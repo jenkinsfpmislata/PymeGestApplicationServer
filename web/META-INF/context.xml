@@ -6,10 +6,11 @@
           driverClassName="com.mysql.jdbc.Driver"
           url="jdbc:mysql://localhost:3306/pymegest_application"
           username="root" 
-          password="frodo2013" 
+          password="" 
           maxActive="100"
           maxIdle="30"
           maxWait="10000"
-          validationQuery="SELECT 1 FROM dual" />
+          validationQuery="SELECT 1 FROM dual" 
+          factory = "org.apache.tomcat.jdbc.pool.DataSourceFactory"  />
 </Context>
 
