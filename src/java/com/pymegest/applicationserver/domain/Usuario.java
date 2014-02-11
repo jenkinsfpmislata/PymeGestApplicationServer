@@ -72,14 +72,14 @@ public class Usuario implements Serializable {
     }
 
     /**
-     * @return the idUsuario
+     * @return the id_usuario
      */
     public Integer getId_usuario() {
         return id_usuario;
     }
 
     /**
-     * @param idUsuario the idUsuario to set
+     * @param id_usuario the id_usuario to set
      */
     public void setId_usuario(Integer id_usuario) {
         this.id_usuario = id_usuario;

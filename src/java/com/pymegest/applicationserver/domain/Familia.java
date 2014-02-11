@@ -1,7 +1,7 @@
 /*
  * Project: PymeGestApplicationServer
  * Package: com.pymegest.applicationserver.domain
- * File: Producto.java
+ * File: Familia.java
  * Date: 10-feb-2014
  * Encoding: UTF-8
  * License: GPL 3.0
@@ -24,36 +24,36 @@
  * You should have received a copy of the GNU General Public License
  * along with Pymegest. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.pymegest.applicationserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import org.hibernate.annotations.IndexColumn;
 
 /**
  * @author Miguel María Martínez Echeverría
  * @version 1.0
  * @since 1.0
  */
-
 @Entity
-@Table(name = "producto")
-public class Producto implements Serializable{
-    
+@Table(name = "familia")
+public class Familia implements Serializable {
+
     @Id
-    @Column(name = "id_producto")
+    @Column(name = "id_familia")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_producto;
-    
-    @Column(name = "codigo_producto")
-    private String codigo_producto;
+    private Integer id_familia;
     
     @Column(name = "nombre")
     private String nombre;
@@ -61,89 +61,49 @@ public class Producto implements Serializable{
     @Column(name = "descripcion")
     private String descripcion;
     
-    @ManyToOne
-    @JoinColumn(name="id_familia")
-    private Familia familia;
-    
-    public Producto() {
-        
-    }
-    
-    public Producto(Integer id_producto) {
-        
-        this.id_producto = id_producto;        
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_producto")
+    @IndexColumn(name = "idx")
+    private List<Producto> productos = new ArrayList();;
+
+    public Familia() {
     }
 
-    /**
-     * @return the id_producto
-     */
-    public Integer getId_producto() {
-        return id_producto;
+    public Familia(Integer id_familia) {
+
+        this.id_familia = id_familia;
     }
 
-    /**
-     * @param id_producto the id_producto to set
-     */
-    public void setId_producto(Integer id_producto) {
-        this.id_producto = id_producto;
+    public Integer getId_familia() {
+        return id_familia;
     }
 
-    /**
-     * @return the codigo_producto
-     */
-    public String getCodigo_producto() {
-        return codigo_producto;
+    public void setId_familia(Integer id_familia) {
+        this.id_familia = id_familia;
     }
 
-    /**
-     * @param codigo_producto the codigo_producto to set
-     */
-    public void setCodigo_producto(String codigo_producto) {
-        this.codigo_producto = codigo_producto;
-    }
-
-    /**
-     * @return the nombre
-     */
     public String getNombre() {
         return nombre;
     }
 
-    /**
-     * @param nombre the nombre to set
-     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
-    /**
-     * @return the descripcion
-     */
     public String getDescripcion() {
         return descripcion;
     }
 
-    /**
-     * @param descripcion the descripcion to set
-     */
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
-    /**
-     * @return the familia
-     */
-    public Familia getFamilia() {
-        return familia;
+    public List<Producto> getProductos() {
+        return productos;
     }
 
-    /**
-     * @param familia the familia to set
-     */
-    public void setFamilia(Familia familia) {
-        this.familia = familia;
+    public void setProductos(List<Producto> productos) {
+        this.productos = productos;
     }
-    
-    
-    
 }

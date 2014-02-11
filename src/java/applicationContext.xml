@@ -16,5 +16,7 @@
     <bean class="com.pymegest.applicationserver.dao.impl.hibernate.UsuarioDAOImplHibernate" /> <!-- Ruta de nuestra clase/s implementada en hibernate -->
     <bean class="com.pymegest.applicationserver.dao.impl.hibernate.EmpleadoDAOImplHibernate" />
     <bean class="com.pymegest.applicationserver.dao.impl.hibernate.ProductoDAOImplHibernate" />
+    <bean class="com.pymegest.applicationserver.dao.impl.hibernate.FamiliaDAOImplHibernate" />
+    <bean class="com.pymegest.applicationserver.dao.impl.hibernate.PuestoDAOImplHibernate" />
     
 </beans>

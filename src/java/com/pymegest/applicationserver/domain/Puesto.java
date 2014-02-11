@@ -1,7 +1,7 @@
 /*
  * Project: PymeGestApplicationServer
  * Package: com.pymegest.applicationserver.domain
- * File: Producto.java
+ * File: Puesto.java
  * Date: 10-feb-2014
  * Encoding: UTF-8
  * License: GPL 3.0
@@ -24,17 +24,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Pymegest. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.pymegest.applicationserver.domain;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 /**
@@ -42,64 +43,45 @@ import javax.persistence.Table;
  * @version 1.0
  * @since 1.0
  */
-
 @Entity
-@Table(name = "producto")
-public class Producto implements Serializable{
-    
+@Table(name = "puesto")
+public class Puesto implements Serializable{
+
     @Id
-    @Column(name = "id_producto")
+    @Column(name="id_puesto")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_producto;
+    private Integer id_puesto;
     
-    @Column(name = "codigo_producto")
-    private String codigo_producto;
-    
-    @Column(name = "nombre")
+    @Column(name="nombre")
     private String nombre;
     
-    @Column(name = "descripcion")
+    @Column(name="descripcion")
     private String descripcion;
     
-    @ManyToOne
-    @JoinColumn(name="id_familia")
-    private Familia familia;
+    @ManyToMany(cascade = {CascadeType.ALL},mappedBy="puestos")
+    private Set<Empleado> empleados=new HashSet();
     
-    public Producto() {
+    public Puesto(){
         
     }
     
-    public Producto(Integer id_producto) {
+    public Puesto(Integer id_puesto){
         
-        this.id_producto = id_producto;        
+        this.id_puesto = id_puesto;
     }
 
     /**
-     * @return the id_producto
+     * @return the id_puesto
      */
-    public Integer getId_producto() {
-        return id_producto;
+    public Integer getId_puesto() {
+        return id_puesto;
     }
 
     /**
-     * @param id_producto the id_producto to set
+     * @param id_puesto the id_puesto to set
      */
-    public void setId_producto(Integer id_producto) {
-        this.id_producto = id_producto;
-    }
-
-    /**
-     * @return the codigo_producto
-     */
-    public String getCodigo_producto() {
-        return codigo_producto;
-    }
-
-    /**
-     * @param codigo_producto the codigo_producto to set
-     */
-    public void setCodigo_producto(String codigo_producto) {
-        this.codigo_producto = codigo_producto;
+    public void setId_puesto(Integer id_puesto) {
+        this.id_puesto = id_puesto;
     }
 
     /**
@@ -131,19 +113,17 @@ public class Producto implements Serializable{
     }
 
     /**
-     * @return the familia
+     * @return the empleados
      */
-    public Familia getFamilia() {
-        return familia;
+    public Set<Empleado> getEmpleados() {
+        return empleados;
     }
 
     /**
-     * @param familia the familia to set
+     * @param empleados the empleados to set
      */
-    public void setFamilia(Familia familia) {
-        this.familia = familia;
+    public void setEmpleados(Set<Empleado> empleados) {
+        this.empleados = empleados;
     }
-    
-    
-    
+     
 }

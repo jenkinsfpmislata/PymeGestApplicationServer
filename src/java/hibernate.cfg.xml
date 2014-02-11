@@ -8,5 +8,7 @@
     <mapping class="com.pymegest.applicationserver.domain.Usuario"/>
     <mapping class="com.pymegest.applicationserver.domain.Empleado"/>
     <mapping class="com.pymegest.applicationserver.domain.Producto"/>
+    <mapping class="com.pymegest.applicationserver.domain.Familia"/>
+    <mapping class="com.pymegest.applicationserver.domain.Puesto"/>
   </session-factory>
 </hibernate-configuration>
