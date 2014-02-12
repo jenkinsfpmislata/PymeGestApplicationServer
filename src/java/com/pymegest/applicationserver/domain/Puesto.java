@@ -26,8 +26,11 @@
  */
 package com.pymegest.applicationserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -35,8 +38,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.hibernate.annotations.IndexColumn;
 
 /**
  * @author Miguel María Martínez Echeverría
@@ -58,8 +64,11 @@ public class Puesto implements Serializable{
     @Column(name="descripcion")
     private String descripcion;
     
-    @ManyToMany(cascade = {CascadeType.ALL},mappedBy="puestos")
-    private Set<Empleado> empleados=new HashSet();
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_empleado")
+    @IndexColumn(name = "idx")
+    private List<Empleado> empleados = new ArrayList();
     
     public Puesto(){
         
@@ -115,14 +124,14 @@ public class Puesto implements Serializable{
     /**
      * @return the empleados
      */
-    public Set<Empleado> getEmpleados() {
+    public List<Empleado> getEmpleados() {
         return empleados;
     }
 
     /**
      * @param empleados the empleados to set
      */
-    public void setEmpleados(Set<Empleado> empleados) {
+    public void setEmpleados(List<Empleado> empleados) {
         this.empleados = empleados;
     }
      

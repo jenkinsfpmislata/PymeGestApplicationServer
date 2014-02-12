@@ -65,7 +65,7 @@ public class Familia implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_producto")
     @IndexColumn(name = "idx")
-    private List<Producto> productos = new ArrayList();;
+    private List<Producto> productos = new ArrayList();
 
     public Familia() {
     }

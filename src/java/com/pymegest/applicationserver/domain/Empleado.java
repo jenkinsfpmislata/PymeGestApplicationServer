@@ -27,6 +27,7 @@
 
 package com.pymegest.applicationserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -40,6 +41,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -68,9 +70,9 @@ public class Empleado implements Serializable{
     @Column(name = "correo_electronico")
     private String correo_electronico;
     
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable(name="empleado_puesto", joinColumns={@JoinColumn(name="id_empleado")}, inverseJoinColumns={@JoinColumn(name="id_puesto")})
-    private Set<Puesto> puestos=new HashSet();
+    @ManyToOne
+    @JoinColumn(name="id_puesto")
+    private Puesto puesto;
     
     public Empleado(){
         
@@ -153,15 +155,15 @@ public class Empleado implements Serializable{
     /**
      * @return the puestos
      */
-    public Set<Puesto> getPuestos() {
-        return puestos;
+    public Puesto getPuestos() {
+        return puesto;
     }
 
     /**
      * @param puestos the puestos to set
      */
-    public void setPuestos(Set<Puesto> puestos) {
-        this.puestos = puestos;
+    public void setPuestos(Puesto puesto) {
+        this.puesto = puesto;
     }
     
     
