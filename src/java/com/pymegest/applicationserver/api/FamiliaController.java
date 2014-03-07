@@ -29,6 +29,7 @@ package com.pymegest.applicationserver.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.pymegest.applicationserver.dao.FamiliaDAO;
+import com.pymegest.applicationserver.domain.BussinesMessage;
 import com.pymegest.applicationserver.domain.Familia;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,7 +48,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @version 1.0
  * @since 1.0
  */
-
 @Controller
 public class FamiliaController {
 
@@ -64,14 +64,28 @@ public class FamiliaController {
             for (int i = 0; i < idsFamiliasArr.length; i++) {
                 listaFamilias.add(familiaDAO.read(Integer.parseInt(idsFamiliasArr[i])));
             }
+            if (listaFamilias.isEmpty() == false) {
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json; chaset=UTF-8");
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json; chaset=UTF-8");
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            String json = objectMapper.writeValueAsString(listaFamilias);
-            response.getWriter().println(json);
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(listaFamilias);
+                response.getWriter().println(json);
 
+            } else {
+
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("La lista de puestos de trabajo esta vacia.");
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+
+            }
 
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -148,13 +162,28 @@ public class FamiliaController {
             objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
             Familia familia = (Familia) objectMapper.readValue(jsonInput, Familia.class);
 
-            familiaDAO.insert(familia);
+            if (familia != null) {
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json; chaset=UTF-8");
+                familiaDAO.insert(familia);
 
-            String jsonOutput = objectMapper.writeValueAsString(familia);
-            response.getWriter().println(jsonOutput);
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                String jsonOutput = objectMapper.writeValueAsString(familia);
+                response.getWriter().println(jsonOutput);
+
+            } else {
+
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("Imposible insertar un puesto de trabajo.");
+
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+
+            }
 
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -176,18 +205,32 @@ public class FamiliaController {
 
             Familia familiaRead = familiaDAO.read(id_familia);
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-            Familia familia = (Familia) objectMapper.readValue(jsonInput, Familia.class);
+            if (familiaRead != null) {
 
-            familiaDAO.update(familiaRead);
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+                Familia familia = (Familia) objectMapper.readValue(jsonInput, Familia.class);
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json; chaset=UTF-8");
+                familiaDAO.update(familiaRead);
 
-            String jsonOutput = objectMapper.writeValueAsString(familia);
-            response.getWriter().println(jsonOutput);
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json; chaset=UTF-8");
 
+                String jsonOutput = objectMapper.writeValueAsString(familia);
+                response.getWriter().println(jsonOutput);
+
+            } else {
+
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("No se ha encontrado ningun puesto de trabajo para actualizar.");
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+            }
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/plain; charset=UTF-8");

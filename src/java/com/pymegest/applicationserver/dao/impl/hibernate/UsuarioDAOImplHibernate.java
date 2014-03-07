@@ -70,4 +70,24 @@ public class UsuarioDAOImplHibernate extends GenericDAOImplHibernate<Usuario, In
             
         }
     }
+    
+    @Override
+    public Usuario findByLogin(String login) {
+
+        if (login == null) {
+            
+            return null;
+        } else {
+
+            Session session = sessionFactory.getCurrentSession();
+
+            Query query = session.createQuery("SELECT usuario FROM Usuario usuario WHERE login = ?");
+
+            query.setString(0,login);
+
+            Usuario usuario = (Usuario) query.uniqueResult();
+            
+            return usuario;
+        }
+    }
 }

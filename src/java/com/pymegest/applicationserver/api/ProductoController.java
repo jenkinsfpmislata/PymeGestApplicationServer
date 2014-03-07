@@ -24,12 +24,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Pymegest. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.pymegest.applicationserver.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.pymegest.applicationserver.dao.ProductoDAO;
+import com.pymegest.applicationserver.domain.BussinesMessage;
 import com.pymegest.applicationserver.domain.Producto;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,31 +48,45 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @version 1.0
  * @since 1.0
  */
-
 @Controller
 public class ProductoController {
 
     @Autowired
     ProductoDAO productoDAO;
-    
+
     @RequestMapping(value = {"/Producto/{idsProductos}"}, method = RequestMethod.GET)
     public void read(HttpServletRequest request, HttpServletResponse response, @PathVariable("idsProductos") String idsProductosStr) {
 
         try {
-            
-            String[] idsProductosArr= idsProductosStr.split(",");
+
+            String[] idsProductosArr = idsProductosStr.split(",");
             List<Producto> listaProductos = new ArrayList();
-            for (int i=0; i<idsProductosArr.length; i++) {
+            for (int i = 0; i < idsProductosArr.length; i++) {
                 listaProductos.add(productoDAO.read(Integer.parseInt(idsProductosArr[i])));
             }
-            
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json; chaset=UTF-8");
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            String json = objectMapper.writeValueAsString(listaProductos);
-            response.getWriter().println(json);
+            if (listaProductos.isEmpty() == false) {
 
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(listaProductos);
+                response.getWriter().println(json);
+
+            } else {
+
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("La lista de productos esta vacia.");
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+
+            }
 
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -92,10 +106,10 @@ public class ProductoController {
 
         try {
             String[] idsProductosArr = idsProductosStr.split(",");
-            for (int i=0; i<idsProductosArr.length; i++) {
+            for (int i = 0; i < idsProductosArr.length; i++) {
                 productoDAO.delete(Integer.parseInt(idsProductosArr[i]));
             }
-            
+
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
         } catch (Exception ex) {
@@ -149,13 +163,27 @@ public class ProductoController {
             objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
             Producto producto = (Producto) objectMapper.readValue(jsonInput, Producto.class);
 
-            productoDAO.insert(producto);
+            if (producto != null) {
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json; chaset=UTF-8");
+                productoDAO.insert(producto);
 
-            String jsonOutput = objectMapper.writeValueAsString(producto);
-            response.getWriter().println(jsonOutput);
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                String jsonOutput = objectMapper.writeValueAsString(producto);
+                response.getWriter().println(jsonOutput);
+            } else {
+
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("Imposible insertar un producto.");
+
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+
+            }
 
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -176,19 +204,33 @@ public class ProductoController {
         try {
 
             Producto productoRead = productoDAO.read(id_producto);
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-            Producto producto = (Producto) objectMapper.readValue(jsonInput, Producto.class);
             
-            productoDAO.update(productoRead);
+            if (productoRead != null) {
+                
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+                Producto producto = (Producto) objectMapper.readValue(jsonInput, Producto.class);
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json; chaset=UTF-8");
+                productoDAO.update(productoRead);
 
-            String jsonOutput = objectMapper.writeValueAsString(producto);
-            response.getWriter().println(jsonOutput);
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json; chaset=UTF-8");
 
+                String jsonOutput = objectMapper.writeValueAsString(producto);
+                response.getWriter().println(jsonOutput);
+                
+            } else {
+
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("No se ha encontrado ningun producto para actualizar.");
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+            }
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/plain; charset=UTF-8");

@@ -24,12 +24,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Pymegest. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.pymegest.applicationserver.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.pymegest.applicationserver.dao.EmpleadoDAO;
+import com.pymegest.applicationserver.domain.BussinesMessage;
 import com.pymegest.applicationserver.domain.Empleado;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,28 +50,43 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller
 public class EmpleadoController {
-    
+
     @Autowired
     EmpleadoDAO empleadoDAO;
-    
+
     @RequestMapping(value = {"/Empleado/{idsEmpleados}"}, method = RequestMethod.GET)
     public void read(HttpServletRequest request, HttpServletResponse response, @PathVariable("idsEmpleados") String idsEmpleadosStr) {
 
         try {
-            
+
             String[] idsEmpleadosArr = idsEmpleadosStr.split(",");
             List<Empleado> listaEmpleados = new ArrayList();
-            for (int i=0; i<idsEmpleadosArr.length; i++) {
+            for (int i = 0; i < idsEmpleadosArr.length; i++) {
                 listaEmpleados.add(empleadoDAO.read(Integer.parseInt(idsEmpleadosArr[i])));
             }
-            
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json; chaset=UTF-8");
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            String json = objectMapper.writeValueAsString(listaEmpleados);
-            response.getWriter().println(json);
+            if (listaEmpleados.isEmpty() == false) {
 
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(listaEmpleados);
+                response.getWriter().println(json);
+
+            } else {
+
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+                
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("La lista de empleados esta vacia.");
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+
+            }
 
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -90,11 +105,12 @@ public class EmpleadoController {
     public void delete(HttpServletRequest request, HttpServletResponse response, @PathVariable("idsEmpleados") String idsEmpleadosStr) {
 
         try {
+
             String[] idsEmpleadosArr = idsEmpleadosStr.split(",");
-            for (int i=0; i<idsEmpleadosArr.length; i++) {
+            for (int i = 0; i < idsEmpleadosArr.length; i++) {
                 empleadoDAO.delete(Integer.parseInt(idsEmpleadosArr[i]));
             }
-            
+
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
         } catch (Exception ex) {
@@ -148,13 +164,27 @@ public class EmpleadoController {
             objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
             Empleado empleado = (Empleado) objectMapper.readValue(jsonInput, Empleado.class);
 
-            empleadoDAO.insert(empleado);
+            if (empleado != null) {
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json; chaset=UTF-8");
+                empleadoDAO.insert(empleado);
 
-            String jsonOutput = objectMapper.writeValueAsString(empleado);
-            response.getWriter().println(jsonOutput);
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                String jsonOutput = objectMapper.writeValueAsString(empleado);
+                response.getWriter().println(jsonOutput);
+            } else {
+
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("Imposible insertar un empleado.");
+
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+
+            }
 
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -176,17 +206,33 @@ public class EmpleadoController {
 
             Empleado empleadoRead = empleadoDAO.read(id_empleado);
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-            Empleado empleado = (Empleado) objectMapper.readValue(jsonInput, Empleado.class);
-            
-            empleadoDAO.update(empleadoRead);
+            if (empleadoRead != null) {
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json; chaset=UTF-8");
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+                Empleado empleado = (Empleado) objectMapper.readValue(jsonInput, Empleado.class);
 
-            String jsonOutput = objectMapper.writeValueAsString(empleado);
-            response.getWriter().println(jsonOutput);
+                empleadoDAO.update(empleadoRead);
+
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                String jsonOutput = objectMapper.writeValueAsString(empleado);
+                response.getWriter().println(jsonOutput);
+                
+            }
+            else {
+                
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+                
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("No se ha encontrado ningun empleado para actualizar.");
+                
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+            }
 
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

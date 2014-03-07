@@ -24,12 +24,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Pymegest. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.pymegest.applicationserver.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.pymegest.applicationserver.dao.PuestoDAO;
+import com.pymegest.applicationserver.domain.BussinesMessage;
 import com.pymegest.applicationserver.domain.Puesto;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,31 +48,45 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @version 1.0
  * @since 1.0
  */
-
 @Controller
 public class PuestoController {
-    
+
     @Autowired
     PuestoDAO puestoDAO;
-    
+
     @RequestMapping(value = {"/Puesto/{idsPuestos}"}, method = RequestMethod.GET)
     public void read(HttpServletRequest request, HttpServletResponse response, @PathVariable("idsPuestos") String idsPuestosStr) {
 
         try {
-            
-            String[] idsPuestosArr= idsPuestosStr.split(",");
+
+            String[] idsPuestosArr = idsPuestosStr.split(",");
             List<Puesto> listaPuestos = new ArrayList();
-            for (int i=0; i<idsPuestosArr.length; i++) {
+            for (int i = 0; i < idsPuestosArr.length; i++) {
                 listaPuestos.add(puestoDAO.read(Integer.parseInt(idsPuestosArr[i])));
             }
-            
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json; chaset=UTF-8");
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            String json = objectMapper.writeValueAsString(listaPuestos);
-            response.getWriter().println(json);
+            if (listaPuestos.isEmpty() == false) {
 
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(listaPuestos);
+                response.getWriter().println(json);
+
+            } else {
+
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("La lista de puestos de trabajo esta vacia.");
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+
+            }
 
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -92,10 +106,10 @@ public class PuestoController {
 
         try {
             String[] idsPuestosArr = idsPuestosStr.split(",");
-            for (int i=0; i<idsPuestosArr.length; i++) {
+            for (int i = 0; i < idsPuestosArr.length; i++) {
                 puestoDAO.delete(Integer.parseInt(idsPuestosArr[i]));
             }
-            
+
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
         } catch (Exception ex) {
@@ -149,14 +163,28 @@ public class PuestoController {
             objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
             Puesto puesto = (Puesto) objectMapper.readValue(jsonInput, Puesto.class);
 
-            puestoDAO.insert(puesto);
+            if (puesto != null) {
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json; chaset=UTF-8");
+                puestoDAO.insert(puesto);
 
-            String jsonOutput = objectMapper.writeValueAsString(puesto);
-            response.getWriter().println(jsonOutput);
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json; chaset=UTF-8");
 
+                String jsonOutput = objectMapper.writeValueAsString(puesto);
+                response.getWriter().println(jsonOutput);
+
+            } else {
+
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("Imposible insertar un puesto.");
+
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+
+            }
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/plain; charset=UTF-8;");
@@ -177,18 +205,34 @@ public class PuestoController {
 
             Puesto puestoRead = puestoDAO.read(id_puesto);
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-            Puesto puesto = (Puesto) objectMapper.readValue(jsonInput, Puesto.class);
+            if (puestoRead != null) {
+                
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+                Puesto puesto = (Puesto) objectMapper.readValue(jsonInput, Puesto.class);
+
+                puestoDAO.update(puestoRead);
+
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                String jsonOutput = objectMapper.writeValueAsString(puesto);
+                response.getWriter().println(jsonOutput);
+                
+            }
             
-            puestoDAO.update(puestoRead);
-
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json; chaset=UTF-8");
-
-            String jsonOutput = objectMapper.writeValueAsString(puesto);
-            response.getWriter().println(jsonOutput);
-
+            else {
+                
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+                
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("No se ha encontrado ningun puesto para actualizar.");
+                
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+            }
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/plain; charset=UTF-8");

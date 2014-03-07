@@ -1,12 +1,12 @@
 /*
  * Project: PymeGestApplicationServer
- * Package: com.pymegest.persistence.dao
- * File: UserDAO.java
- * Date: 13-dic-2013
+ * Package: com.pymegest.applicationserver.domain
+ * File: BussinesMessage.java
+ * Date: 07-mar-2014
  * Encoding: UTF-8
  * License: GPL 3.0
  *
- * Copyright(c) PymeGest 2013
+ * Copyright(c) PymeGest 2014
  * www.pymegest.com
  * admin@pymegest.com
  *
@@ -24,23 +24,39 @@
  * You should have received a copy of the GNU General Public License
  * along with Pymegest. If not, see <http://www.gnu.org/licenses/>.
  */
-
-package com.pymegest.applicationserver.dao;
-
-import com.pymegest.persistence.dao.GenericDAO;
-import com.pymegest.applicationserver.domain.Usuario;
-import java.util.List;
-
-
+package com.pymegest.applicationserver.domain;
 
 /**
- * @author Ruben Coll Tovar
+ * @author Miguel María Martínez Echeverría
  * @version 1.0
  * @since 1.0
  */
-public interface UsuarioDAO extends GenericDAO<Usuario, Integer>{
-       
-    public List<Usuario> findByName(String nombre);
-    public Usuario findByLogin(String login);
+public class BussinesMessage {
+
+    private String mensaje;
+    private String datos;
+
+    public BussinesMessage(String mensaje, String datos) {
+        this.mensaje = mensaje;
+        this.datos = datos;
+    }
     
+    public BussinesMessage() {
+    }
+
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    public String getDatos() {
+        return datos;
+    }
+
+    public void setDatos(String datos) {
+        this.datos = datos;
+    }
 }

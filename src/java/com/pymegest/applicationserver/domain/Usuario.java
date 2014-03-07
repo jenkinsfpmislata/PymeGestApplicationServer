@@ -35,9 +35,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.jasypt.util.password.BasicPasswordEncryptor;
 
 /**
- * @author Juanjo
+ * @author Miguel María Martínez Echeverría
  * @version 1.0
  * @since 1.0
  */
@@ -62,6 +63,12 @@ public class Usuario implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "tipo_cuenta")
     private TipoCuenta tipo_cuenta;
+    
+    @Column(name = "login")
+    private String login;
+    
+    @Column(name = "password")
+    private String password;
 
     public Usuario() {
     }
@@ -123,4 +130,33 @@ public class Usuario implements Serializable {
         this.correo_electronico = correo_electronico;
     }
 
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean checkPassword(String Password) {
+
+        BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
+
+        if (passwordEncryptor.checkPassword(Password,getPassword())) {
+            // correct!
+            
+            return true;
+        } else {
+            // bad login!
+            return false;
+        }
+    }
 }

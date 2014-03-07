@@ -24,12 +24,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Pymegest. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.pymegest.applicationserver.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.pymegest.applicationserver.dao.UsuarioDAO;
+import com.pymegest.applicationserver.domain.BussinesMessage;
 import com.pymegest.applicationserver.domain.Usuario;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,31 +48,47 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @version 1.0
  * @since 1.0
  */
-
 @Controller
 public class UsuarioController {
-    
+
     @Autowired
     UsuarioDAO usuarioDAO;
-    
+
     @RequestMapping(value = {"/Usuario/{idsUsuarios}"}, method = RequestMethod.GET)
     public void read(HttpServletRequest request, HttpServletResponse response, @PathVariable("idsUsuarios") String idsUsuariosStr) {
 
         try {
-            
-            String[] idsUsuariosArr= idsUsuariosStr.split(",");
+
+            String[] idsUsuariosArr = idsUsuariosStr.split(",");
             List<Usuario> listaUsuarios = new ArrayList();
-            for (int i=0; i<idsUsuariosArr.length; i++) {
+            for (int i = 0; i < idsUsuariosArr.length; i++) {
                 listaUsuarios.add(usuarioDAO.read(Integer.parseInt(idsUsuariosArr[i])));
             }
+
+            if (listaUsuarios.isEmpty() == false) {
+
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(listaUsuarios);
+                response.getWriter().println(json);
+                
+            }
             
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json; chaset=UTF-8");
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            String json = objectMapper.writeValueAsString(listaUsuarios);
-            response.getWriter().println(json);
-
+            else {
+                
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+                
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("La lista de usuarios esta vacia.");
+                
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+                
+            }
 
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -92,10 +108,10 @@ public class UsuarioController {
 
         try {
             String[] idsUsuariosArr = idsUsuariosStr.split(",");
-            for (int i=0; i<idsUsuariosArr.length; i++) {
+            for (int i = 0; i < idsUsuariosArr.length; i++) {
                 usuarioDAO.delete(Integer.parseInt(idsUsuariosArr[i]));
             }
-            
+
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
         } catch (Exception ex) {
@@ -149,6 +165,8 @@ public class UsuarioController {
             objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
             Usuario usuario = (Usuario) objectMapper.readValue(jsonInput, Usuario.class);
 
+            if(usuario != null){
+                
             usuarioDAO.insert(usuario);
 
             response.setStatus(HttpServletResponse.SC_OK);
@@ -156,7 +174,21 @@ public class UsuarioController {
 
             String jsonOutput = objectMapper.writeValueAsString(usuario);
             response.getWriter().println(jsonOutput);
-
+            
+            }
+            
+            else {
+                
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+                
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("Imposible insertar un usuario.");
+                
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+                
+            }
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/plain; charset=UTF-8;");
@@ -177,12 +209,14 @@ public class UsuarioController {
 
             Usuario usuarioRead = usuarioDAO.read(id_usuario);
 
+            if( usuarioRead != null) {
+                
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
             Usuario usuario = (Usuario) objectMapper.readValue(jsonInput, Usuario.class);
-            
+
             usuarioRead.setTipo_cuenta(usuario.getTipo_cuenta());
-            
+
             usuarioDAO.update(usuarioRead);
 
             response.setStatus(HttpServletResponse.SC_OK);
@@ -190,7 +224,22 @@ public class UsuarioController {
 
             String jsonOutput = objectMapper.writeValueAsString(usuario);
             response.getWriter().println(jsonOutput);
-
+            
+            }
+            
+            else {
+                
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+                
+                BussinesMessage mensaje = new BussinesMessage();
+                mensaje.setMensaje("No se ha encontrado ningun usuario para actualizar.");
+                
+                ObjectMapper objectMapper = new ObjectMapper();
+                String json = objectMapper.writeValueAsString(mensaje);
+                response.getWriter().println(json);
+                
+            }
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/plain; charset=UTF-8");
