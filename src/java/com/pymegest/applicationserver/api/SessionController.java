@@ -26,21 +26,16 @@
  */
 package com.pymegest.applicationserver.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.pymegest.applicationserver.dao.UsuarioDAO;
-import com.pymegest.applicationserver.domain.BussinesMessage;
 import com.pymegest.applicationserver.domain.Usuario;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,161 +49,117 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class SessionController {
 
     @Autowired
-    private UsuarioDAO usuarioDAO;
+    UsuarioDAO usuarioDAO;
 
     @RequestMapping(value = {"/Session"}, method = RequestMethod.POST)
-    public void login(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse, @RequestBody String json) throws JsonProcessingException {
+    public void insert(HttpServletRequest httpServletRequest, HttpServletResponse response, @RequestBody String jsonSession) {
+
         try {
-            
+
             ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-            Credentials login = (Credentials) objectMapper.readValue(json, Credentials.class);
-            Usuario usuario = usuarioDAO.findByLogin(login.getLogin());
-            
-            if (usuario != null) {
-                
-                if (usuario.checkPassword(login.getPassword())) {
-                    
-                    HttpSession httpSession = httpRequest.getSession();
-                    httpSession.setAttribute("usuario", usuario.getLogin());
-                    noCache(httpServletResponse);
-                    httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+
+            Credentials credentials = (Credentials) objectMapper.readValue(jsonSession, Credentials.class);
+
+            Usuario usuario = usuarioDAO.findByLogin(credentials.getLogin());
+
+            if (usuario == null) {
+                //No existe usuario con login introducido
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; chaset=UTF-8");
+
+                String jsonOutput = objectMapper.writeValueAsString(null);
+                response.getWriter().println(jsonOutput);
+            } else {
+
+                boolean existe = usuario.checkPassword(credentials.getPassword());
+
+                if (existe) {
+
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.setContentType("application/json; chaset=UTF-8");
+
+                    String jsonOutput = objectMapper.writeValueAsString(usuario);
+                    response.getWriter().println(jsonOutput);
+
+                    httpServletRequest.getSession(true).setAttribute("idUsuario", usuario.getId_usuario());
+
+
 
                 } else {
-                    
-                    noCache(httpServletResponse);
-                    httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.setContentType("application/json; chaset=UTF-8");
+
+                    String jsonOutput = objectMapper.writeValueAsString(null);
+                    response.getWriter().println(jsonOutput);
                 }
-            } else {
-                
-                noCache(httpServletResponse);
-                httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+
             }
-            
-        } catch (ConstraintViolationException cve) {
-            
-            List<BussinesMessage> errorList = new ArrayList();
-            ObjectMapper jackson = new ObjectMapper();
-            
-            for (ConstraintViolation constraintViolation : cve.getConstraintViolations()) {
-                
-                String datos = constraintViolation.getPropertyPath().toString();
-                String mensaje = constraintViolation.getMessage();
-                BussinesMessage bussinesMessage = new BussinesMessage(datos, mensaje);
-                errorList.add(bussinesMessage);
-            }
-            
-            jackson.writeValueAsString(errorList);
-            noCache(httpServletResponse);
-            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            
+
         } catch (Exception ex) {
-            
-            noCache(httpServletResponse);
-            httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            httpServletResponse.setContentType("text/plain; charset=UTF-8");
-            
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/plain; charset=UTF-8;");
             try {
-                
-                noCache(httpServletResponse);
-                ex.printStackTrace(httpServletResponse.getWriter());
-                
-            } catch (Exception ex1) {
-                
-                noCache(httpServletResponse);
+
+                ex.printStackTrace(response.getWriter());
+
+            } catch (IOException ex1) {
             }
         }
+
     }
 
     @RequestMapping(value = {"/Session"}, method = RequestMethod.GET)
-    public void recuperarSession(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse) {
+    public void read(HttpServletRequest httpServletRequest, HttpServletResponse response) {
+
         try {
 
-            HttpSession session = httpRequest.getSession();
-            String username = (String) session.getAttribute("usuario");
-            Usuario usuario = usuarioDAO.findByLogin(username);
+            Integer idUsuario = (Integer) httpServletRequest.getSession(true).getAttribute("idUduario");
 
-            if (usuario != null) {
+            Usuario usuario = usuarioDAO.read(idUsuario);
 
-                ObjectMapper jackson = new ObjectMapper();
-                String userJson = jackson.writeValueAsString(usuario);
-                noCache(httpServletResponse);
-                httpServletResponse.getWriter().println(userJson);
-                httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-                httpServletResponse.setContentType("text/plain; charset=UTF-8");
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType("application/json; chaset=UTF-8");
 
-            } else {
-                
-                noCache(httpServletResponse);
-                httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                httpServletResponse.setContentType("text/plain; charset=UTF-8");
-                
-            }
-            
-            noCache(httpServletResponse);
-            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json = objectMapper.writeValueAsString(usuario);
+            response.getWriter().println(json);
+
 
         } catch (Exception ex) {
             
-            noCache(httpServletResponse);
-            httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            httpServletResponse.setContentType("text/plain; charset=UTF-8");
-            
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/plain; charset=UTF-8;");
             try {
-                
-                noCache(httpServletResponse);
-                ex.printStackTrace(httpServletResponse.getWriter());
-                
-            } catch (Exception ex1) {
-                
-                noCache(httpServletResponse);
+
+                ex.printStackTrace(response.getWriter());
+
+            } catch (IOException ex1) {
             }
         }
     }
 
     @RequestMapping(value = {"/Session"}, method = RequestMethod.DELETE)
-    public void deleteSession(HttpServletRequest httpRequest, HttpServletResponse httpServletResponse) {
-        
+    public void delete(HttpServletRequest httpServletRequest, HttpServletResponse response) {
+
         try {
-            
-            HttpSession session = httpRequest.getSession();
-            String username = (String) session.getAttribute("usuario");
-            Usuario usuario = usuarioDAO.findByLogin(username);
-            
-            if (usuario != null) {
-                
-                session.removeAttribute("usuario");
-                httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-                
-            } else {
-                
-                noCache(httpServletResponse);
-                httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                httpServletResponse.setContentType("text/plain; charset=UTF-8");
-            }
-            
-            noCache(httpServletResponse);
-            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+           
+            httpServletRequest.getSession(true).invalidate();
+
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
         } catch (Exception ex) {
             
-            noCache(httpServletResponse);
-            httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            httpServletResponse.setContentType("text/plain; charset=UTF-8");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/plain; charset=UTF-8");
             
             try {
-                
-                noCache(httpServletResponse);
-                ex.printStackTrace(httpServletResponse.getWriter());
-                
-            } catch (Exception ex1) {
-                
-                noCache(httpServletResponse);
+
+                ex.printStackTrace(response.getWriter());
+
+            } catch (IOException ex1) {
             }
         }
-    }
 
-    private void noCache(HttpServletResponse httpServletResponse) {
-        httpServletResponse.setHeader("Cache-Control", "no-cache");
     }
 }
